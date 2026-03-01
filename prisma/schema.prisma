@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  name         String
+  passwordHash String   @map("password_hash")
+  role         String   @default("viewer") // "admin" | "viewer"
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  modelAccess  UserModelAccess[]
+  @@map("users")
+}
+
+model UserModelAccess {
+  id      String @id @default(uuid())
+  userId  String @map("user_id")
+  modelId String @map("model_id")
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  model   Model  @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  @@unique([userId, modelId])
+  @@map("user_model_access")
+}
+
+model Group {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  models    Model[]
+  @@map("groups")
+}
+
+model Model {
+  id                 String   @id @default(uuid())
+  name               String
+  minSalesGoal       Float    @map("min_sales_goal")
+  excellentSalesGoal Float    @map("excellent_sales_goal")
+  ltvGoal            Float    @map("ltv_goal")
+  groupId            String?  @map("group_id")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+  group              Group?   @relation(fields: [groupId], references: [id], onDelete: SetNull)
+  entries            DailyEntry[]
+  userAccess         UserModelAccess[]
+  @@map("models")
+}
+
+model DailyEntry {
+  id        String   @id @default(uuid())
+  modelId   String   @map("model_id")
+  date      String
+  sales     Float
+  newSubs   Int      @map("new_subs")
+  notes     String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  model     Model    @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  @@unique([modelId, date])
+  @@map("daily_entries")
+}
+
+model AppSettings {
+  id                       String  @id @default(uuid())
+  totalsMinSalesGoal       Float   @default(3000) @map("totals_min_sales_goal")
+  totalsExcellentSalesGoal Float   @default(6000) @map("totals_excellent_sales_goal")
+  totalsLtvGoal            Float   @default(50) @map("totals_ltv_goal")
+  @@map("app_settings")
+}
