@@ -1,6 +1,3 @@
-const { execSync } = require("child_process");
-try {
-  execSync("npx prisma db push --accept-data-loss", { stdio: "inherit" });
-} catch (e) {
-  console.log("Migration warning (continuing):", e.message);
-}
+const { spawnSync } = require("child_process");
+const result = spawnSync("npx", ["prisma", "db", "push", "--accept-data-loss"], { stdio: "inherit" });
+process.exit(result.status || 0);
