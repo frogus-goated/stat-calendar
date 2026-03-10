@@ -39,17 +39,20 @@ model Group {
 }
 
 model Model {
-  id               String   @id @default(uuid())
-  name             String
-  salesGoal        Float    @default(800) @map("sales_goal")
-  minLtvGoal       Float    @default(30) @map("min_ltv_goal")
-  excellentLtvGoal Float    @default(50) @map("excellent_ltv_goal")
-  groupId          String?  @map("group_id")
-  createdAt        DateTime @default(now()) @map("created_at")
-  updatedAt        DateTime @updatedAt @map("updated_at")
-  group            Group?   @relation(fields: [groupId], references: [id], onDelete: SetNull)
-  entries          DailyEntry[]
-  userAccess       UserModelAccess[]
+  id                 String   @id @default(uuid())
+  name               String
+  minSalesGoal       Float    @default(500) @map("min_sales_goal")
+  excellentSalesGoal Float    @default(1000) @map("excellent_sales_goal")
+  ltvGoal            Float    @default(40) @map("ltv_goal")
+  salesGoal          Float    @default(800) @map("sales_goal")
+  minLtvGoal         Float    @default(30) @map("min_ltv_goal")
+  excellentLtvGoal   Float    @default(50) @map("excellent_ltv_goal")
+  groupId            String?  @map("group_id")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+  group              Group?   @relation(fields: [groupId], references: [id], onDelete: SetNull)
+  entries            DailyEntry[]
+  userAccess         UserModelAccess[]
   @@map("models")
 }
 
@@ -68,9 +71,12 @@ model DailyEntry {
 }
 
 model AppSettings {
-  id                     String  @id @default(uuid())
-  totalsSalesGoal        Float   @default(3000) @map("totals_sales_goal")
-  totalsMinLtvGoal       Float   @default(30) @map("totals_min_ltv_goal")
-  totalsExcellentLtvGoal Float   @default(50) @map("totals_excellent_ltv_goal")
+  id                       String  @id @default(uuid())
+  totalsMinSalesGoal       Float   @default(3000) @map("totals_min_sales_goal")
+  totalsExcellentSalesGoal Float   @default(6000) @map("totals_excellent_sales_goal")
+  totalsLtvGoal            Float   @default(50) @map("totals_ltv_goal")
+  totalsSalesGoal          Float   @default(3000) @map("totals_sales_goal")
+  totalsMinLtvGoal         Float   @default(30) @map("totals_min_ltv_goal")
+  totalsExcellentLtvGoal   Float   @default(50) @map("totals_excellent_ltv_goal")
   @@map("app_settings")
 }
