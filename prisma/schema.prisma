@@ -41,9 +41,9 @@ model Group {
 model Model {
   id               String   @id @default(uuid())
   name             String
-  salesGoal        Float    @map("sales_goal")
-  minLtvGoal       Float    @map("min_ltv_goal")
-  excellentLtvGoal Float    @map("excellent_ltv_goal")
+  salesGoal        Float    @default(800) @map("sales_goal")
+  minLtvGoal       Float    @default(30) @map("min_ltv_goal")
+  excellentLtvGoal Float    @default(50) @map("excellent_ltv_goal")
   groupId          String?  @map("group_id")
   createdAt        DateTime @default(now()) @map("created_at")
   updatedAt        DateTime @updatedAt @map("updated_at")
